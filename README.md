@@ -105,7 +105,7 @@ RDF Model → SPARQL Query → QueryExecution
 
 #### **编译项目**
 ```bash
-mvn clean compile
+mvn clean compile -DskipTests
 ```
 
 #### **运行方式**
