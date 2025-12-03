@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <jena.version>4.9.0</jena.version>
+        <jena.version>4.8.0</jena.version>
     </properties>
 
     <dependencies>
@@ -36,7 +36,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.jena</groupId>
-            <artifactId>jena-reasoner</artifactId>
+            <artifactId>jena-arq</artifactId>
             <version>${jena.version}</version>
         </dependency>
 

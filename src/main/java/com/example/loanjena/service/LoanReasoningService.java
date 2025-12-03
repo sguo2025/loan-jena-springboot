@@ -2,9 +2,7 @@ package com.example.loanjena.service;
 
 import com.example.loanjena.model.LoanApplicationRequest;
 import org.apache.jena.rdf.model.*;
-import org.apache.jena.reasoner.GenericRuleReasoner;
-import org.apache.jena.reasoner.InfModel;
-import org.apache.jena.reasoner.Rule;
+import org.apache.jena.query.*;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
 import org.springframework.stereotype.Service;
@@ -29,67 +27,45 @@ public class LoanReasoningService {
 
         // 添加属性
         applicant.addProperty(dataModel.createProperty(NS + "hasAge"),
-                dataModel.createTypedLiteral(request.getAge(), XSD.integer));
+                dataModel.createTypedLiteral(request.getAge()));
         applicant.addProperty(dataModel.createProperty(NS + "hasCreditScore"),
-                dataModel.createTypedLiteral(request.getCreditScore(), XSD.integer));
+                dataModel.createTypedLiteral(request.getCreditScore()));
 
         app.addProperty(RDF.type, dataModel.getResource(NS + "Application"));
         app.addProperty(dataModel.createProperty(NS + "applicant"), applicant);
 
-        // 2. 定义规则（与你提供的完全一致）
-        String rules = """
-            @prefix ex: <http://example.org/> .
-            @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-            @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+        // 2. 定义评估逻辑（使用 SPARQL 查询替代规则推理）
+        String appId = "App_" + request.getApplicantId();
+        String sparqlQuery = "PREFIX ex: <" + NS + ">\n" +
+                "SELECT ?status WHERE {\n" +
+                "  BIND(ex:" + appId + " as ?app)\n" +
+                "  ?app ex:applicant ?p .\n" +
+                "  ?p ex:hasAge ?age .\n" +
+                "  ?p ex:hasCreditScore ?score .\n" +
+                "  \n" +
+                "  BIND(IF((?age > 17) && (?score >= 600), true, false) as ?meetsBasic)\n" +
+                "  \n" +
+                "  OPTIONAL { ?p a ex:Student . BIND(true as ?isStudent) }\n" +
+                "  BIND(COALESCE(?isStudent, false) as ?isStu)\n" +
+                "  \n" +
+                "  BIND(IF(?meetsBasic && !?isStu, \"Accepted\", \"Rejected\") as ?status)\n" +
+                "}";
 
-            [acceptBasic: 
-              (?app ex:applicant ?p),
-              (?p ex:hasAge ?age), 
-              greaterThan(?age, 17),
-              (?p ex:hasCreditScore ?score),
-              greaterThanEqual(?score, 600)
-              ->
-              (?app ex:meetsBasicCriteria "true"^^xsd:boolean)
-            ]
-
-            [rejectStudent:
-              (?app ex:applicant ?p),
-              (?p rdf:type ex:Student)
-              ->
-              (?app ex:isStudent "true"^^xsd:boolean)
-            ]
-
-            [finalDecision:
-              (?app ex:meetsBasicCriteria "true"^^xsd:boolean),
-              notEqual((?app ex:isStudent "true"^^xsd:boolean), true)
-              ->
-              (?app ex:status ex:Accepted)
-            ]
-
-            [defaultReject:
-              (?app rdf:type ex:Application),
-              notEqual((?app ex:status ex:Accepted), true)
-              ->
-              (?app ex:status ex:Rejected)
-            ]
-            """;
-
-        // 3. 推理
-        GenericRuleReasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
-        InfModel infModel = ModelFactory.createInfModel(reasoner, dataModel);
-
-        // 4. 查询结果
-        StmtIterator iter = infModel.listStatements(
-                app,
-                infModel.createProperty(NS + "status"),
-                (RDFNode) null
-        );
-
-        if (iter.hasNext()) {
-            RDFNode status = iter.nextStatement().getObject();
-            return status.getLocalName(); // "Accepted" or "Rejected"
-        } else {
-            return "Unknown";
+        // 3. 执行 SPARQL 查询
+        Query query = QueryFactory.create(sparqlQuery);
+        QueryExecution qe = QueryExecutionFactory.create(query, dataModel);
+        
+        try {
+            ResultSet results = qe.execSelect();
+            if (results.hasNext()) {
+                QuerySolution qs = results.nextSolution();
+                String status = qs.getLiteral("status").getString();
+                return status;
+            } else {
+                return "Unknown";
+            }
+        } finally {
+            qe.close();
         }
     }
 }
