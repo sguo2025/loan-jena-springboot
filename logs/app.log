@@ -1,35 +1,4 @@
 nohup: ignoring input
-[INFO] Scanning for projects...
-[INFO] 
-[INFO] ------------------< com.example:loan-jena-springboot >------------------
-[INFO] Building Loan Jena Spring Boot 1.0.0
-[INFO]   from pom.xml
-[INFO] --------------------------------[ jar ]---------------------------------
-[INFO] 
-[INFO] >>> spring-boot:2.7.18:run (default-cli) > test-compile @ loan-jena-springboot >>>
-[INFO] 
-[INFO] --- resources:3.2.0:resources (default-resources) @ loan-jena-springboot ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Using 'UTF-8' encoding to copy filtered properties files.
-[INFO] Copying 1 resource
-[INFO] Copying 1 resource
-[INFO] 
-[INFO] --- compiler:3.10.1:compile (default-compile) @ loan-jena-springboot ---
-[INFO] Nothing to compile - all classes are up to date
-[INFO] 
-[INFO] --- resources:3.2.0:testResources (default-testResources) @ loan-jena-springboot ---
-[INFO] Using 'UTF-8' encoding to copy filtered resources.
-[INFO] Using 'UTF-8' encoding to copy filtered properties files.
-[INFO] skip non existing resourceDirectory /workspaces/loan-jena-springboot/src/test/resources
-[INFO] 
-[INFO] --- compiler:3.10.1:testCompile (default-testCompile) @ loan-jena-springboot ---
-[INFO] No sources to compile
-[INFO] 
-[INFO] <<< spring-boot:2.7.18:run (default-cli) < test-compile @ loan-jena-springboot <<<
-[INFO] 
-[INFO] 
-[INFO] --- spring-boot:2.7.18:run (default-cli) @ loan-jena-springboot ---
-[INFO] Attaching agents: []
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -39,29 +8,20 @@ nohup: ignoring input
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::               (v2.7.18)
 
-2025-12-09 03:08:18.464  INFO 9807 --- [           main] c.example.loanjena.LoanJenaApplication   : Starting LoanJenaApplication using Java 11.0.14.1 on codespaces-cab1d2 with PID 9807 (/workspaces/loan-jena-springboot/target/classes started by codespace in /workspaces/loan-jena-springboot)
-2025-12-09 03:08:18.466  INFO 9807 --- [           main] c.example.loanjena.LoanJenaApplication   : No active profile set, falling back to 1 default profile: "default"
-2025-12-09 03:08:19.259  INFO 9807 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2025-12-09 03:08:19.264  INFO 9807 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-12-09 03:08:19.264  INFO 9807 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
-2025-12-09 03:08:19.327  INFO 9807 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-12-09 03:08:19.327  INFO 9807 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 808 ms
-✓ 本体文件加载成功
-2025-12-09 03:08:20.230  INFO 9807 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
-2025-12-09 03:08:20.238  INFO 9807 --- [           main] c.example.loanjena.LoanJenaApplication   : Started LoanJenaApplication in 2.116 seconds (JVM running for 2.47)
-2025-12-09 03:08:43.489  INFO 9807 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-12-09 03:08:43.490  INFO 9807 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-12-09 03:08:43.491  INFO 9807 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD FAILURE
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time:  10:53 min
-[INFO] Finished at: 2025-12-09T03:19:09Z
-[INFO] ------------------------------------------------------------------------
-[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.7.18:run (default-cli) on project loan-jena-springboot: Application finished with exit code: 137 -> [Help 1]
-[ERROR] 
-[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
-[ERROR] Re-run Maven using the -X switch to enable full debug logging.
-[ERROR] 
-[ERROR] For more information about the errors and possible solutions, please read the following articles:
-[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+2025-12-09 06:23:51.682  INFO 28940 --- [           main] c.example.loanjena.LoanJenaApplication   : Starting LoanJenaApplication v1.0.0 using Java 11.0.14.1 on codespaces-cab1d2 with PID 28940 (/workspaces/loan-jena-springboot/target/loan-jena-springboot-1.0.0.jar started by codespace in /workspaces/loan-jena-springboot)
+2025-12-09 06:23:51.688  INFO 28940 --- [           main] c.example.loanjena.LoanJenaApplication   : No active profile set, falling back to 1 default profile: "default"
+2025-12-09 06:23:53.607  INFO 28940 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2025-12-09 06:23:53.620  INFO 28940 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-09 06:23:53.621  INFO 28940 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.83]
+2025-12-09 06:23:53.757  INFO 28940 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-12-09 06:23:53.758  INFO 28940 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1952 ms
+✓ BSS4.0 客户过户本体加载成功
+✓ 本体版本: 1.0.0
+✓ 基于 TM Forum ODA 标准
+✓ BSS4.0 过户本体加载成功 - 8步骤流程
+✓ 支持步骤推理、状态追踪、回退控制
+2025-12-09 06:23:56.687  INFO 28940 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2025-12-09 06:23:56.700  INFO 28940 --- [           main] c.example.loanjena.LoanJenaApplication   : Started LoanJenaApplication in 5.948 seconds (JVM running for 6.612)
+2025-12-09 06:24:29.876  INFO 28940 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-09 06:24:29.876  INFO 28940 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-09 06:24:29.877  INFO 28940 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
