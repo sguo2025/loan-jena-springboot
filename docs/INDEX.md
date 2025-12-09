@@ -6,7 +6,8 @@
 
 1. **PROJECT_COMPLETION.md** ⭐⭐⭐ - 5分钟了解整个项目
 2. **README_ODA_TRANSFER.md** ⭐⭐ - 系统完整使用手册
-3. **运行测试**: `./test_all_scenarios.sh`
+3. **BUSINESS_RULES_SUMMARY.md** ⭐ - 业务规则新增总结
+4. **运行测试**: `./test_all_scenarios.sh` 或 `./scripts/test_business_rules.sh`
 
 ---
 
@@ -20,6 +21,14 @@
 | **README_ODA_TRANSFER.md** | 系统完整使用文档 | 20分钟 | ⭐⭐⭐⭐⭐ |
 | **TEST_RESULTS.md** | 详细测试报告 | 10分钟 | ⭐⭐⭐⭐ |
 | **DELIVERY_SUMMARY.md** | 项目交付总结 | 15分钟 | ⭐⭐⭐⭐ |
+
+### 🆕 业务规则文档 (新增)
+
+| 文档名称 | 作用 | 阅读时间 | 重要性 |
+|---------|------|---------|--------|
+| **BUSINESS_RULES_SUMMARY.md** | 业务规则新增完成总结 | 10分钟 | ⭐⭐⭐⭐⭐ |
+| **BUSINESS_RULES_TEST_REPORT.md** | 业务规则测试报告 | 15分钟 | ⭐⭐⭐⭐ |
+| **BUSINESS_RULES_USAGE_GUIDE.md** | 业务规则使用指南 | 10分钟 | ⭐⭐⭐⭐ |
 
 ### 📚 参考文档
 
@@ -61,29 +70,39 @@
 
 #### 📌 业务规则
 → **README_ODA_TRANSFER.md** - "业务规则库"章节  
-→ **TEST_RESULTS.md** - "业务规则引擎"章节
+→ **TEST_RESULTS.md** - "业务规则引擎"章节  
+→ **BUSINESS_RULES_SUMMARY.md** - 🆕 业务规则新增总结
+
+#### 📌 如何使用业务规则验证 🆕
+→ **BUSINESS_RULES_USAGE_GUIDE.md** - API使用指南  
+→ **BUSINESS_RULES_TEST_REPORT.md** - 测试报告  
+→ 运行: `./scripts/test_business_rules.sh`
 
 #### 📌 项目结构
 → **PROJECT_STRUCTURE.md** - 详细的目录树和文件说明
 
 #### 📌 如何快速测试
-→ 运行: `./test_all_scenarios.sh`  
+→ 运行: `./test_all_scenarios.sh` (完整测试)  
+→ 运行: `./scripts/test_business_rules.sh` (业务规则测试) 🆕  
 → 查看: **QUICK_START.md**
 
 ---
 
 ## 🗂️ 文件类型分类
 
-### 📄 Markdown文档 (8个)
+### 📄 Markdown文档 (11个)
 ```
-PROJECT_COMPLETION.md       ⭐⭐⭐⭐⭐  项目完成总览
-README_ODA_TRANSFER.md      ⭐⭐⭐⭐⭐  系统完整文档
-TEST_RESULTS.md             ⭐⭐⭐⭐    测试报告
-DELIVERY_SUMMARY.md         ⭐⭐⭐⭐    交付总结
-PROJECT_STRUCTURE.md        ⭐⭐⭐     项目结构
-QUICK_START.md              ⭐⭐⭐     快速入门
-README_TRANSFER.md          ⭐⭐      原始文档
-README.md                   ⭐⭐      项目主文档
+PROJECT_COMPLETION.md           ⭐⭐⭐⭐⭐  项目完成总览
+README_ODA_TRANSFER.md          ⭐⭐⭐⭐⭐  系统完整文档
+BUSINESS_RULES_SUMMARY.md       ⭐⭐⭐⭐⭐  业务规则新增总结 🆕
+BUSINESS_RULES_TEST_REPORT.md   ⭐⭐⭐⭐    业务规则测试报告 🆕
+BUSINESS_RULES_USAGE_GUIDE.md   ⭐⭐⭐⭐    业务规则使用指南 🆕
+TEST_RESULTS.md                 ⭐⭐⭐⭐    测试报告
+DELIVERY_SUMMARY.md             ⭐⭐⭐⭐    交付总结
+PROJECT_STRUCTURE.md            ⭐⭐⭐     项目结构
+QUICK_START.md                  ⭐⭐⭐     快速入门
+README_TRANSFER.md              ⭐⭐      原始文档
+README.md                       ⭐⭐      项目主文档
 ```
 
 ### 💻 Java源码 (9个)

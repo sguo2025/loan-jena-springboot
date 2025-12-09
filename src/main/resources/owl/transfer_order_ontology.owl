@@ -453,6 +453,43 @@ transfer:totalCount a owl:DatatypeProperty ;
     rdfs:range xsd:integer ;
     rdfs:label "总数"@zh .
 
+# 客户状态与业务规则相关属性
+transfer:custStatus a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:string ;
+    rdfs:label "客户状态"@zh ;
+    rdfs:comment "客户状态，如NORMAL/FRAUD/SUSPENDED"@zh .
+
+transfer:arrearsStatus a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:string ;
+    rdfs:label "欠费状态"@zh ;
+    rdfs:comment "客户欠费状态，如NO_ARREARS/ARREARS"@zh .
+
+transfer:blockBusinessOperation a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "阻断业务操作"@zh ;
+    rdfs:comment "是否阻断所有业务操作"@zh .
+
+transfer:blockTransferOperation a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "阻断过户操作"@zh ;
+    rdfs:comment "是否阻断过户业务操作"@zh .
+
+transfer:businessAction a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:string ;
+    rdfs:label "业务动作"@zh ;
+    rdfs:comment "推理得出的业务动作，如STOP_ALL_OPERATIONS/STOP_TRANSFER"@zh .
+
+transfer:actionMessage a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:string ;
+    rdfs:label "操作提示信息"@zh ;
+    rdfs:comment "给用户的操作提示或错误信息"@zh .
+
 # =========================
 # Annotation properties
 # =========================
@@ -569,6 +606,20 @@ transfer:PaymentConfirmationRule a transfer:BusinessLogic ;
     transfer:logicType "SWRL" ;
     transfer:logicExpression "TransferOrder(?o) ^ PaymentRecord(?p) ^ paymentStatus(?p,\"SETTLED\") -> canConfirmOrder(?o,true)" ;
     rdfs:label "缴费确认规则"@zh .
+
+transfer:FraudCustomerCheckRule a transfer:BusinessLogic ;
+    transfer:logicCode "FraudCustomerCheckRule" ;
+    transfer:logicType "SWRL" ;
+    transfer:logicExpression "DomainObject(?c) ^ custStatus(?c,\"FRAUD\") ^ (SourceCustomer(?c) | TargetCustomer(?c)) -> blockBusinessOperation(?c,true) ^ businessAction(?c,\"STOP_ALL_OPERATIONS\") ^ actionMessage(?c,\"涉诈用户不允许办理任何业务，待涉诈解除后方可继续办理\")" ;
+    rdfs:label "客户涉诈检查规则"@zh ;
+    rdfs:comment "如果客户状态是涉诈，限制提示涉诈用户不允许办理任何业务，待涉诈解除后方可继续办理。"@zh .
+
+transfer:ArrearsCheckRule a transfer:BusinessLogic ;
+    transfer:logicCode "ArrearsCheckRule" ;
+    transfer:logicType "SWRL" ;
+    transfer:logicExpression "SourceCustomer(?s) ^ arrearsStatus(?s,\"ARREARS\") ^ ownsSubscription(?s,?sub) -> blockTransferOperation(?s,true) ^ businessAction(?s,\"STOP_TRANSFER\") ^ actionMessage(?s,\"用户存在欠费，不允许办理过户业务，请先缴清费用\")" ;
+    rdfs:label "客户欠费检查规则"@zh ;
+    rdfs:comment "判断过户用户是否欠费状态，欠费限制提示用户不允许办理过户业务，待费用缴清后方可继续办理。"@zh .
 
 # =========================
 # Process step specializations

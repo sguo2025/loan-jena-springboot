@@ -1,0 +1,388 @@
+{
+  "testSuite": "业务规则验证测试",
+  "version": "1.0.0",
+  "description": "测试客户涉诈和欠费业务规则",
+  "testCases": [
+    {
+      "id": "TC_BR_001",
+      "name": "查询所有业务规则",
+      "category": "规则查询",
+      "method": "GET",
+      "url": "/api/business-rules/rules",
+      "expectedResult": {
+        "success": true,
+        "totalRules": 5,
+        "includesRules": ["FraudCustomerCheckRule", "ArrearsCheckRule"]
+      },
+      "priority": "P0"
+    },
+    {
+      "id": "TC_BR_002",
+      "name": "查询涉诈检查规则详情",
+      "category": "规则查询",
+      "method": "GET",
+      "url": "/api/business-rules/rule/FraudCustomerCheckRule",
+      "expectedResult": {
+        "ruleCode": "FraudCustomerCheckRule",
+        "ruleType": "SWRL",
+        "hasExpression": true,
+        "hasLabel": true
+      },
+      "priority": "P0"
+    },
+    {
+      "id": "TC_BR_003",
+      "name": "查询欠费检查规则详情",
+      "category": "规则查询",
+      "method": "GET",
+      "url": "/api/business-rules/rule/ArrearsCheckRule",
+      "expectedResult": {
+        "ruleCode": "ArrearsCheckRule",
+        "ruleType": "SWRL",
+        "hasExpression": true,
+        "hasLabel": true
+      },
+      "priority": "P0"
+    },
+    {
+      "id": "TC_BR_004",
+      "name": "涉诈客户检查-源客户涉诈状态",
+      "category": "涉诈检查",
+      "method": "POST",
+      "url": "/api/business-rules/validate/fraud",
+      "request": {
+        "custId": "CUST001",
+        "custName": "张三",
+        "custStatus": "FRAUD",
+        "isSource": true
+      },
+      "expectedResult": {
+        "success": false,
+        "blocked": true,
+        "blockType": "STOP_ALL_OPERATIONS",
+        "message": "涉诈用户不允许办理任何业务，待涉诈解除后方可继续办理"
+      },
+      "priority": "P0",
+      "description": "源客户为涉诈状态，应拦截所有业务操作"
+    },
+    {
+      "id": "TC_BR_005",
+      "name": "涉诈客户检查-源客户正常状态",
+      "category": "涉诈检查",
+      "method": "POST",
+      "url": "/api/business-rules/validate/fraud",
+      "request": {
+        "custId": "CUST002",
+        "custName": "李四",
+        "custStatus": "NORMAL",
+        "isSource": true
+      },
+      "expectedResult": {
+        "success": true,
+        "blocked": false,
+        "message": "客户状态正常，允许办理业务"
+      },
+      "priority": "P0",
+      "description": "源客户状态正常，应允许业务操作"
+    },
+    {
+      "id": "TC_BR_006",
+      "name": "涉诈客户检查-目标客户涉诈状态",
+      "category": "涉诈检查",
+      "method": "POST",
+      "url": "/api/business-rules/validate/fraud",
+      "request": {
+        "custId": "CUST003",
+        "custName": "王五",
+        "custStatus": "FRAUD",
+        "isSource": false
+      },
+      "expectedResult": {
+        "success": false,
+        "blocked": true,
+        "blockType": "STOP_ALL_OPERATIONS",
+        "message": "涉诈用户不允许办理任何业务，待涉诈解除后方可继续办理"
+      },
+      "priority": "P0",
+      "description": "目标客户为涉诈状态，同样应拦截所有业务操作"
+    },
+    {
+      "id": "TC_BR_007",
+      "name": "欠费检查-欠费状态有订阅",
+      "category": "欠费检查",
+      "method": "POST",
+      "url": "/api/business-rules/validate/arrears",
+      "request": {
+        "custId": "CUST004",
+        "custName": "赵六",
+        "arrearsStatus": "ARREARS",
+        "hasSubscription": true
+      },
+      "expectedResult": {
+        "success": false,
+        "blocked": true,
+        "blockType": "STOP_TRANSFER",
+        "message": "用户存在欠费，不允许办理过户业务，请先缴清费用"
+      },
+      "priority": "P0",
+      "description": "客户欠费且有订阅，应拦截过户业务"
+    },
+    {
+      "id": "TC_BR_008",
+      "name": "欠费检查-无欠费状态",
+      "category": "欠费检查",
+      "method": "POST",
+      "url": "/api/business-rules/validate/arrears",
+      "request": {
+        "custId": "CUST005",
+        "custName": "孙七",
+        "arrearsStatus": "NO_ARREARS",
+        "hasSubscription": true
+      },
+      "expectedResult": {
+        "success": true,
+        "blocked": false,
+        "message": "客户无欠费，允许办理过户业务"
+      },
+      "priority": "P0",
+      "description": "客户无欠费，应允许过户业务"
+    },
+    {
+      "id": "TC_BR_009",
+      "name": "欠费检查-欠费无订阅",
+      "category": "欠费检查",
+      "method": "POST",
+      "url": "/api/business-rules/validate/arrears",
+      "request": {
+        "custId": "CUST006",
+        "custName": "周八",
+        "arrearsStatus": "ARREARS",
+        "hasSubscription": false
+      },
+      "expectedResult": {
+        "success": true,
+        "blocked": false,
+        "message": "客户无欠费，允许办理过户业务"
+      },
+      "priority": "P1",
+      "description": "客户欠费但无订阅，规则不触发，应通过"
+    },
+    {
+      "id": "TC_BR_010",
+      "name": "综合验证-涉诈客户",
+      "category": "综合验证",
+      "method": "POST",
+      "url": "/api/business-rules/validate/all",
+      "request": {
+        "custId": "CUST007",
+        "custName": "吴九",
+        "custStatus": "FRAUD",
+        "arrearsStatus": "NO_ARREARS",
+        "isSource": true,
+        "hasSubscription": true
+      },
+      "expectedResult": {
+        "success": false,
+        "validationResults": [
+          {
+            "ruleCode": "FraudCustomerCheckRule",
+            "passed": false,
+            "blocked": true,
+            "blockType": "STOP_ALL_OPERATIONS"
+          }
+        ]
+      },
+      "priority": "P0",
+      "description": "涉诈客户，优先级最高，只进行涉诈检查即返回"
+    },
+    {
+      "id": "TC_BR_011",
+      "name": "综合验证-欠费客户",
+      "category": "综合验证",
+      "method": "POST",
+      "url": "/api/business-rules/validate/all",
+      "request": {
+        "custId": "CUST008",
+        "custName": "郑十",
+        "custStatus": "NORMAL",
+        "arrearsStatus": "ARREARS",
+        "isSource": true,
+        "hasSubscription": true
+      },
+      "expectedResult": {
+        "success": false,
+        "validationResults": [
+          {
+            "ruleCode": "FraudCustomerCheckRule",
+            "passed": true
+          },
+          {
+            "ruleCode": "ArrearsCheckRule",
+            "passed": false,
+            "blocked": true,
+            "blockType": "STOP_TRANSFER"
+          }
+        ]
+      },
+      "priority": "P0",
+      "description": "正常客户但有欠费，涉诈检查通过后进行欠费检查"
+    },
+    {
+      "id": "TC_BR_012",
+      "name": "综合验证-涉诈且欠费客户",
+      "category": "综合验证",
+      "method": "POST",
+      "url": "/api/business-rules/validate/all",
+      "request": {
+        "custId": "CUST009",
+        "custName": "钱十一",
+        "custStatus": "FRAUD",
+        "arrearsStatus": "ARREARS",
+        "isSource": true,
+        "hasSubscription": true
+      },
+      "expectedResult": {
+        "success": false,
+        "validationResults": [
+          {
+            "ruleCode": "FraudCustomerCheckRule",
+            "passed": false,
+            "blocked": true,
+            "blockType": "STOP_ALL_OPERATIONS"
+          }
+        ]
+      },
+      "priority": "P0",
+      "description": "涉诈且欠费，只进行涉诈检查即返回（优先级）"
+    },
+    {
+      "id": "TC_BR_013",
+      "name": "综合验证-正常客户",
+      "category": "综合验证",
+      "method": "POST",
+      "url": "/api/business-rules/validate/all",
+      "request": {
+        "custId": "CUST010",
+        "custName": "陈十二",
+        "custStatus": "NORMAL",
+        "arrearsStatus": "NO_ARREARS",
+        "isSource": true,
+        "hasSubscription": true
+      },
+      "expectedResult": {
+        "success": true,
+        "validationResults": [
+          {
+            "ruleCode": "FraudCustomerCheckRule",
+            "passed": true,
+            "blocked": false
+          },
+          {
+            "ruleCode": "ArrearsCheckRule",
+            "passed": true,
+            "blocked": false
+          }
+        ]
+      },
+      "priority": "P0",
+      "description": "完全正常的客户，所有检查都通过"
+    },
+    {
+      "id": "TC_BR_014",
+      "name": "综合验证-目标客户不进行欠费检查",
+      "category": "综合验证",
+      "method": "POST",
+      "url": "/api/business-rules/validate/all",
+      "request": {
+        "custId": "CUST011",
+        "custName": "卫十三",
+        "custStatus": "NORMAL",
+        "arrearsStatus": "ARREARS",
+        "isSource": false,
+        "hasSubscription": true
+      },
+      "expectedResult": {
+        "success": true,
+        "validationResults": [
+          {
+            "ruleCode": "FraudCustomerCheckRule",
+            "passed": true,
+            "blocked": false
+          }
+        ]
+      },
+      "priority": "P1",
+      "description": "目标客户只进行涉诈检查，不进行欠费检查"
+    },
+    {
+      "id": "TC_BR_015",
+      "name": "边界测试-暂停状态客户",
+      "category": "边界测试",
+      "method": "POST",
+      "url": "/api/business-rules/validate/fraud",
+      "request": {
+        "custId": "CUST012",
+        "custName": "蒋十四",
+        "custStatus": "SUSPENDED",
+        "isSource": true
+      },
+      "expectedResult": {
+        "success": true,
+        "blocked": false
+      },
+      "priority": "P2",
+      "description": "暂停状态不是涉诈，应通过涉诈检查"
+    }
+  ],
+  "testScenarios": [
+    {
+      "scenario": "正常过户流程",
+      "description": "正常客户进行过户业务",
+      "steps": [
+        "TC_BR_001",
+        "TC_BR_005",
+        "TC_BR_008",
+        "TC_BR_013"
+      ],
+      "expectedOutcome": "所有检查通过，允许办理过户"
+    },
+    {
+      "scenario": "涉诈客户拦截",
+      "description": "涉诈客户尝试办理业务",
+      "steps": [
+        "TC_BR_002",
+        "TC_BR_004",
+        "TC_BR_010"
+      ],
+      "expectedOutcome": "涉诈检查失败，拦截所有业务操作"
+    },
+    {
+      "scenario": "欠费客户拦截",
+      "description": "欠费客户尝试办理过户",
+      "steps": [
+        "TC_BR_003",
+        "TC_BR_007",
+        "TC_BR_011"
+      ],
+      "expectedOutcome": "欠费检查失败，拦截过户业务"
+    },
+    {
+      "scenario": "复合问题拦截",
+      "description": "涉诈且欠费客户尝试办理业务",
+      "steps": [
+        "TC_BR_012"
+      ],
+      "expectedOutcome": "涉诈优先拦截，不进行后续检查"
+    }
+  ],
+  "performanceRequirements": {
+    "maxResponseTime": "500ms",
+    "maxRuleLoadTime": "1000ms",
+    "concurrentUsers": 100
+  },
+  "testData": {
+    "fraudCustomers": ["CUST001", "CUST003", "CUST007", "CUST009"],
+    "arrearsCustomers": ["CUST004", "CUST006", "CUST008", "CUST009"],
+    "normalCustomers": ["CUST002", "CUST005", "CUST010", "CUST011"]
+  }
+}
