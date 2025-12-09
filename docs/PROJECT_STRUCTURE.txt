@@ -1,0 +1,19 @@
+.
+├── DELIVERY_SUMMARY.md
+├── PROJECT_STRUCTURE.txt
+├── QUICK_START.md
+├── README.md
+├── README_ODA_TRANSFER.md
+├── README_TRANSFER.md
+├── TEST_RESULTS.md
+├── app.log
+├── chatlog
+├── pom.xml
+├── src
+│   └── main
+│       ├── java
+│       └── resources
+├── test_all_scenarios.sh
+└── test_transfer.sh
+
+6 directories, 11 files
