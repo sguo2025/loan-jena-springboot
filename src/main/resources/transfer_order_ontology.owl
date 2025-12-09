@@ -56,6 +56,47 @@ transfer:ProcessStep a owl:Class ;
     rdfs:label "流程步骤"@zh ;
     rdfs:comment "与eTOM节点对齐的受理步骤抽象。"@zh .
 
+# 8个具体的过户流程步骤
+transfer:Step1_LocateSourceCustomer a owl:Class ;
+    rdfs:subClassOf transfer:ProcessStep ;
+    rdfs:label "步骤1-定位源客户"@zh ;
+    rdfs:comment "查询源客户列表并进行鉴权"@zh .
+
+transfer:Step2_SelectTransferNumber a owl:Class ;
+    rdfs:subClassOf transfer:ProcessStep ;
+    rdfs:label "步骤2-过户号码选择"@zh ;
+    rdfs:comment "查询客户产品实例，让客户选择过户号码"@zh .
+
+transfer:Step3_CreateCustomerOrder a owl:Class ;
+    rdfs:subClassOf transfer:ProcessStep ;
+    rdfs:label "步骤3-创建客户订单"@zh ;
+    rdfs:comment "创建BSS客户订单，支持从此步骤回退到步骤1"@zh .
+
+transfer:Step4_InitTransferBusiness a owl:Class ;
+    rdfs:subClassOf transfer:ProcessStep ;
+    rdfs:label "步骤4-过户业务初始化"@zh ;
+    rdfs:comment "初始化产品实例受理"@zh .
+
+transfer:Step5_InitCommonAttributes a owl:Class ;
+    rdfs:subClassOf transfer:ProcessStep ;
+    rdfs:label "步骤5-公共属性初始化"@zh ;
+    rdfs:comment "初始化公共属性"@zh .
+
+transfer:Step6_ConfirmTargetCustomer a owl:Class ;
+    rdfs:subClassOf transfer:ProcessStep ;
+    rdfs:label "步骤6-目标客户确认"@zh ;
+    rdfs:comment "查询并鉴权目标客户"@zh .
+
+transfer:Step7_SaveOrder a owl:Class ;
+    rdfs:subClassOf transfer:ProcessStep ;
+    rdfs:label "步骤7-订单保存"@zh ;
+    rdfs:comment "提交并保存订单"@zh .
+
+transfer:Step8_ConfirmOrder a owl:Class ;
+    rdfs:subClassOf transfer:ProcessStep ;
+    rdfs:label "步骤8-订单确认"@zh ;
+    rdfs:comment "收银台确认订单"@zh .
+
 transfer:ODAComponent a owl:Class ;
     rdfs:subClassOf tmforum:Component ;
     rdfs:label "ODA组件"@zh ;
@@ -338,6 +379,79 @@ transfer:logicExpression a owl:DatatypeProperty ;
     rdfs:domain transfer:BusinessLogic ;
     rdfs:range xsd:string ;
     rdfs:label "规则表达式"@zh .
+
+# 流程控制属性
+transfer:currentStepNumber a owl:DatatypeProperty ;
+    rdfs:domain transfer:TransferOrder ;
+    rdfs:range xsd:integer ;
+    rdfs:label "当前步骤编号"@zh ;
+    rdfs:comment "标识订单当前所在的步骤 (1-8)"@zh .
+
+transfer:totalSteps a owl:DatatypeProperty ;
+    rdfs:domain transfer:TransferOrder ;
+    rdfs:range xsd:integer ;
+    rdfs:label "总步骤数"@zh ;
+    rdfs:comment "固定值8，表示完整过户流程的总步骤数"@zh .
+
+transfer:nextStepNumber a owl:DatatypeProperty ;
+    rdfs:domain transfer:TransferOrder ;
+    rdfs:range xsd:integer ;
+    rdfs:label "下一步骤编号"@zh ;
+    rdfs:comment "推理出的下一步骤编号"@zh .
+
+transfer:canRollback a owl:DatatypeProperty ;
+    rdfs:domain transfer:TransferOrder ;
+    rdfs:range xsd:boolean ;
+    rdfs:label "是否可回退"@zh ;
+    rdfs:comment "步骤3可以回退到步骤1"@zh .
+
+transfer:rollbackToStep a owl:DatatypeProperty ;
+    rdfs:domain transfer:TransferOrder ;
+    rdfs:range xsd:integer ;
+    rdfs:label "回退到步骤"@zh ;
+    rdfs:comment "可回退的目标步骤编号"@zh .
+
+transfer:stepStatus a owl:DatatypeProperty ;
+    rdfs:domain transfer:ProcessStep ;
+    rdfs:range xsd:string ;
+    rdfs:label "步骤状态"@zh ;
+    rdfs:comment "PENDING/IN_PROGRESS/COMPLETED/FAILED/ROLLED_BACK"@zh .
+
+transfer:stepStartTime a owl:DatatypeProperty ;
+    rdfs:domain transfer:ProcessStep ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "步骤开始时间"@zh .
+
+transfer:stepEndTime a owl:DatatypeProperty ;
+    rdfs:domain transfer:ProcessStep ;
+    rdfs:range xsd:dateTime ;
+    rdfs:label "步骤结束时间"@zh .
+
+transfer:stepErrorMessage a owl:DatatypeProperty ;
+    rdfs:domain transfer:ProcessStep ;
+    rdfs:range xsd:string ;
+    rdfs:label "步骤错误信息"@zh .
+
+transfer:searchValue a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:string ;
+    rdfs:label "查询值"@zh ;
+    rdfs:comment "用于客户查询的值（姓名/手机号/证件号）"@zh .
+
+transfer:pageNum a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:integer ;
+    rdfs:label "页码"@zh .
+
+transfer:pageSize a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:integer ;
+    rdfs:label "页大小"@zh .
+
+transfer:totalCount a owl:DatatypeProperty ;
+    rdfs:domain transfer:DomainObject ;
+    rdfs:range xsd:integer ;
+    rdfs:label "总数"@zh .
 
 # =========================
 # Annotation properties

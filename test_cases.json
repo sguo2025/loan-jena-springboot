@@ -1,0 +1,199 @@
+{
+  "test_cases": [
+    {
+      "name": "测试步骤1 - 定位源客户",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "sourceSearchValue": "李三狗",
+        "sourceSearchType": "B",
+        "sourceCustId": "931282308426",
+        "sourceCustName": "李三狗",
+        "sourceCertType": "1",
+        "sourceCertNumber": "440113199012018939",
+        "sourceCommonRegionId": "930013101",
+        "sourceApproveLevel": "29B",
+        "sourceAuthPassed": true
+      },
+      "expected": {
+        "currentStep": 1,
+        "nextStep": 2,
+        "canRollback": false
+      }
+    },
+    {
+      "name": "测试步骤2 - 过户号码选择",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "sourceCustId": "931282308426",
+        "sourceCustName": "李三狗",
+        "sourceCertType": "1",
+        "sourceCertNumber": "440113199012018939",
+        "sourceAuthPassed": true,
+        "totalSubscriptionCount": 2,
+        "selectedAccNum": "931LZ0040613023",
+        "selectedProdInstId": "613300070614",
+        "selectedProdId": "100000045",
+        "selectedProdName": "宽带"
+      },
+      "expected": {
+        "currentStep": 2,
+        "nextStep": 3,
+        "canRollback": false
+      }
+    },
+    {
+      "name": "测试步骤3 - 创建客户订单 (可回退点)",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "sourceCustId": "931282308426",
+        "sourceCustName": "李三狗",
+        "sourceCertType": "1",
+        "sourceCertNumber": "440113199012018939",
+        "sourceAuthPassed": true,
+        "selectedAccNum": "931LZ0040613023",
+        "selectedProdInstId": "613300070614",
+        "custOrderId": "CUST_ORD_20251209001",
+        "orderCreateTime": "2025-12-09 10:00:00",
+        "channelId": "CH001",
+        "sceneCode": "TRANSFER",
+        "operatorId": "OP12345"
+      },
+      "expected": {
+        "currentStep": 3,
+        "nextStep": 4,
+        "canRollback": true,
+        "rollbackToStep": 1
+      }
+    },
+    {
+      "name": "测试回退功能 - 从步骤3回退到步骤1",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "currentStep": 3,
+        "custOrderId": "CUST_ORD_20251209001",
+        "needRollback": true,
+        "rollbackToStep": 1,
+        "rollbackReason": "客户需要更换过户号码"
+      },
+      "expected": {
+        "currentStep": 3,
+        "canRollback": true,
+        "finalDecision": "ROLLBACK - 从步骤3回退到步骤1，重新开始流程"
+      }
+    },
+    {
+      "name": "测试步骤4 - 过户业务初始化",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "sourceCustId": "931282308426",
+        "sourceAuthPassed": true,
+        "selectedAccNum": "931LZ0040613023",
+        "selectedProdInstId": "613300070614",
+        "custOrderId": "CUST_ORD_20251209001",
+        "serviceOfferId": "2549",
+        "businessInitSuccess": true
+      },
+      "expected": {
+        "currentStep": 4,
+        "nextStep": 5,
+        "canRollback": false
+      }
+    },
+    {
+      "name": "测试步骤5 - 公共属性初始化",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "sourceCustId": "931282308426",
+        "sourceAuthPassed": true,
+        "selectedAccNum": "931LZ0040613023",
+        "selectedProdInstId": "613300070614",
+        "custOrderId": "CUST_ORD_20251209001",
+        "businessInitSuccess": true,
+        "commonAttrInitSuccess": true
+      },
+      "expected": {
+        "currentStep": 5,
+        "nextStep": 6,
+        "canRollback": false
+      }
+    },
+    {
+      "name": "测试步骤6 - 目标客户确认",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "sourceCustId": "931282308426",
+        "sourceAuthPassed": true,
+        "selectedAccNum": "931LZ0040613023",
+        "selectedProdInstId": "613300070614",
+        "custOrderId": "CUST_ORD_20251209001",
+        "businessInitSuccess": true,
+        "commonAttrInitSuccess": true,
+        "targetSearchValue": "张四",
+        "targetSearchType": "B",
+        "targetCustId": "931282308427",
+        "targetCustName": "张四",
+        "targetCertType": "1",
+        "targetCertNumber": "360311199511062517",
+        "targetAuthPassed": true
+      },
+      "expected": {
+        "currentStep": 6,
+        "nextStep": 7,
+        "canRollback": false
+      }
+    },
+    {
+      "name": "测试步骤7 - 订单保存",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "sourceCustId": "931282308426",
+        "sourceCustName": "李三狗",
+        "sourceAuthPassed": true,
+        "selectedAccNum": "931LZ0040613023",
+        "selectedProdInstId": "613300070614",
+        "custOrderId": "CUST_ORD_20251209001",
+        "businessInitSuccess": true,
+        "commonAttrInitSuccess": true,
+        "targetCustId": "931282308427",
+        "targetCustName": "张四",
+        "targetAuthPassed": true,
+        "orderSaved": true,
+        "orderSaveTime": "2025-12-09 15:00:00"
+      },
+      "expected": {
+        "currentStep": 7,
+        "nextStep": 8,
+        "canRollback": false
+      }
+    },
+    {
+      "name": "测试步骤8 - 订单确认 (流程完成)",
+      "request": {
+        "orderId": "ORD_20251209001",
+        "sourceCustId": "931282308426",
+        "sourceCustName": "李三狗",
+        "sourceAuthPassed": true,
+        "selectedAccNum": "931LZ0040613023",
+        "selectedProdInstId": "613300070614",
+        "custOrderId": "CUST_ORD_20251209001",
+        "businessInitSuccess": true,
+        "commonAttrInitSuccess": true,
+        "targetCustId": "931282308427",
+        "targetCustName": "张四",
+        "targetAuthPassed": true,
+        "orderSaved": true,
+        "orderConfirmed": true,
+        "orderConfirmTime": "2025-12-09 15:30:00",
+        "paymentAmount": 0.0,
+        "payChannel": "COUNTER",
+        "receiptNo": "RCP202512090001"
+      },
+      "expected": {
+        "currentStep": 8,
+        "nextStep": 8,
+        "canRollback": false,
+        "finalDecision": "SUCCESS - 过户流程全部完成，订单已确认"
+      }
+    }
+  ]
+}
