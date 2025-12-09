@@ -13,13 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * 过户订单控制器 - BSS4.0
- * 支持完整的8步骤过户流程和智能推理
+ * BSS4.0 过户业务推理控制器
+ * 基于 Apache Jena 本体推理引擎
+ * 支持完整的8步骤过户流程和智能决策
  */
 @RestController
 @RequestMapping("/api/transfer")
-@Tag(name = "BSS4.0过户订单推理", description = "基于 TM Forum ODA 本体的过户业务推理 API")
-public class TransferOrderController {
+@Tag(name = "BSS4.0过户业务推理", description = "基于 TM Forum ODA 本体的智能过户业务推理 API")
+public class TransferBusinessReasoningController {
 
     @Autowired
     private TransferReasoningService reasoningService;
