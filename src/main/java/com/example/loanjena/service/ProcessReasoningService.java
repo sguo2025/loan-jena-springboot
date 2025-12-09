@@ -176,7 +176,13 @@ public class ProcessReasoningService {
         info.setEtomRef(getDataPropertyValue(stepClass, ETOM_REF_PROPERTY));
         
         // 获取对象属性
-        info.setNextSteps(getObjectPropertyValues(stepClass, PRECEDES_PROPERTY));
+        List<String> nextFromProperty = getObjectPropertyValues(stepClass, PRECEDES_PROPERTY);
+        List<String> nextFromRestriction = getRestrictionValues(stepClass, PRECEDES_PROPERTY);
+        List<String> allNext = new ArrayList<>();
+        allNext.addAll(nextFromProperty);
+        allNext.addAll(nextFromRestriction);
+        info.setNextSteps(allNext.isEmpty() ? allNext : allNext.stream().distinct().collect(Collectors.toList()));
+        
         info.setPreviousSteps(findPreviousSteps(uri));
         info.setRequiredEntities(getRestrictionValues(stepClass, REQUIRES_ENTITY_PROPERTY));
         info.setProducedEntities(getRestrictionValues(stepClass, PRODUCES_ENTITY_PROPERTY));
@@ -279,32 +285,31 @@ public class ProcessReasoningService {
      */
     private List<String> findPreviousSteps(String stepUri) {
         List<String> previous = new ArrayList<>();
-        Property precedesProperty = ontModel.getProperty(PRECEDES_PROPERTY);
+        OntClass processStepClass = ontModel.getOntClass(PROCESS_STEP_CLASS);
         
-        if (precedesProperty == null) {
+        if (processStepClass == null) {
             return previous;
         }
         
-        // 查找所有指向当前步骤的 precedes 属性
-        ResIterator subjects = ontModel.listSubjectsWithProperty(precedesProperty);
-        while (subjects.hasNext()) {
-            Resource subject = subjects.next();
-            if (!subject.isURIResource()) {
-                continue;
-            }
-            
-            StmtIterator stmts = subject.listProperties(precedesProperty);
-            while (stmts.hasNext()) {
-                Statement stmt = stmts.next();
-                RDFNode obj = stmt.getObject();
-                if (obj.isResource() && obj.isURIResource()) {
-                    String objUri = obj.asResource().getURI();
-                    if (objUri != null && objUri.equals(stepUri)) {
-                        String subjectUri = subject.getURI();
-                        if (subjectUri != null) {
-                            previous.add(subjectUri);
-                        }
-                    }
+        // 遍历所有 ProcessStep 的子类
+        ExtendedIterator<OntClass> subClasses = processStepClass.listSubClasses(false);
+        while (subClasses.hasNext()) {
+            OntClass subClass = subClasses.next();
+            if (!subClass.isAnon() && subClass.isURIResource()) {
+                String candidateUri = subClass.getURI();
+                
+                // 检查该步骤的 nextSteps 是否包含当前步骤
+                List<String> candidateNextSteps = new ArrayList<>();
+                
+                // 从属性中获取
+                candidateNextSteps.addAll(getObjectPropertyValues(subClass, PRECEDES_PROPERTY));
+                
+                // 从限制中获取
+                candidateNextSteps.addAll(getRestrictionValues(subClass, PRECEDES_PROPERTY));
+                
+                // 如果包含当前步骤，则该候选步骤是前驱
+                if (candidateNextSteps.contains(stepUri)) {
+                    previous.add(candidateUri);
                 }
             }
         }
